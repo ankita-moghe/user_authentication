@@ -9,4 +9,8 @@ FactoryBot.define do
     email { "joe@gmail.com" }
     password { "blah567" }
   end
+
+  factory :session do
+    secret_id { "Mk3-iODjP3mnblur"}
+  end
 end

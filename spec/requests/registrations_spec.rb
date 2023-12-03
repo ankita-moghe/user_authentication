@@ -23,6 +23,13 @@ RSpec.describe RegistrationsController, type: :controller do
           user = User.last.reload
           expect(user.first_name).to eq('Ankita')
         end
+
+        it "should send welcome email" do
+          request.headers["Api-key"] = api_key.key
+          post :create, params: create_params
+          expect(response).to have_http_status(:created)
+          expect(ActionMailer::Base.deliveries.count).to eq(1)
+        end
       end
 
       context "With invalid user params" do
