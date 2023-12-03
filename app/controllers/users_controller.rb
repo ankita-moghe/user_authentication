@@ -52,7 +52,7 @@ class UsersController < ApplicationController
   end
 
   def verify_token_for_login
-    if @user.validate_token(params[:token])
+    if @user.validate_token(params[:user][:token])
       session = @user.sessions.create(secret_id: @user.generate_session_token)
       render json: { user: @user, session_token: session.secret_id }, status: :ok
     else

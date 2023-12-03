@@ -69,4 +69,63 @@ RSpec.describe UsersController, type: :controller do
       end
     end
   end
+
+  describe "#verify_token_for_login" do
+    let(:api_key) { create(:api_key)}
+    let(:user) {create(:user)}
+    let(:user_token) {user.generate_token}
+    let(:verify_params) do {
+        email: user.email,
+        token: user_token
+      }
+    end
+
+    context "When valid token passed" do
+      it "should allow user to login" do
+        request.headers["Api-key"] = api_key.key
+        put :verify_token_for_login, params: {user: verify_params }
+        expect(response).to have_http_status(:ok)
+      end
+    end
+
+    context "When invalid token passed" do
+      it "should not allow user to log in" do
+        request.headers["Api-key"] = api_key.key
+        verify_params[:token] = "wer34545"
+        put :verify_token_for_login, params: {user: verify_params }
+        expect(response).to have_http_status(:unprocessable_entity)
+      end
+    end
+  end
+
+  describe "#update" do
+    let(:api_key) { create(:api_key)}
+    let(:user) {create(:user)}
+    let(:session) {Session.create(secret_id: "Mk3-iODjP3mnblur", user_id: user.id)}
+    let(:update_params) do {
+        first_name: "fsdvgsdfh",
+        last_name: "gdfghftytte",
+        two_factor_enabled: false
+      }
+    end
+    context "When valid params passed" do
+      context "when 2 factor is disabling" do
+        it "should allow to update the user data" do
+          request.headers["Api-key"] = api_key.key
+          put :update, params: {id: session.secret_id, user: update_params }
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      context "When enabling 2 factor authentication" do
+        it "should send mail with token" do
+          request.headers["Api-key"] = api_key.key
+          update_params[:two_factor_enabled] = true
+          put :update, params: {id: session.secret_id, user: update_params }
+          expect(response).to have_http_status(:ok)
+          expect(ActionMailer::Base.deliveries.count).to eq(1)
+        end
+      end
+    end
+  end
 end

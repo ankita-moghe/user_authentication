@@ -24,6 +24,7 @@ class User < ApplicationRecord
   end
 
   def validate_token(token)
+    return false if token.nil?
     self.otp_secret_key == Digest::SHA256.hexdigest(token)
   end
 end

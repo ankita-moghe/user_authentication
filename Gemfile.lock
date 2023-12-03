@@ -109,6 +109,9 @@ GEM
     pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
+    pry-byebug (3.10.1)
+      byebug (~> 11.0)
+      pry (>= 0.13, < 0.15)
     psych (3.3.4)
     puma (4.3.12)
       nio4r (~> 2.0)
@@ -197,6 +200,7 @@ DEPENDENCIES
   listen (~> 3.2)
   pg (>= 0.18, < 2.0)
   pry
+  pry-byebug
   psych (< 4)
   puma (~> 4.1)
   rails (~> 6.0.6, >= 6.0.6.1)
